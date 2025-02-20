@@ -170,5 +170,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Project specific
-.globalenv
+# Python specific
+Scripts
+pyvenv.cfg
+include
+lib
