@@ -20,7 +20,9 @@ client = BackendApplicationClient(client_id=client_id)
 oauth = OAuth2Session(client=client)
 
 # Get token
-token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token', client_secret=client_secret, include_client_id=True)
+token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token',
+                          client_secret=client_secret,
+                          include_client_id=True)
 
 # Proper error handling
 def sentinelhub_compliance_hook(response):
