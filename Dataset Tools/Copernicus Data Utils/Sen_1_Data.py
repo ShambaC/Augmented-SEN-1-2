@@ -23,10 +23,10 @@ request = {
     "input": {
         "bounds": {
             "bbox": [
-                88.42659137638978,
-                22.65212821646085,
-                88.35209033879212,
-                22.716114746550712
+                88.4410829646665,
+                22.567793946666132,
+                88.32709981036963,
+                22.769912393094224
             ]
         },
         "data": [
@@ -42,8 +42,8 @@ request = {
         ]
     },
     "output": {
-        "width": 256,
-        "height": 256,
+        "width": 1400,
+        "height": 2500,
         "responses": [
             {
                 "identifier": "default",
@@ -61,11 +61,9 @@ response = oauth.post(url, json=request)
 
 if response.ok :
     print("Response OK")
-    with open("TestImageResponse.jpeg", 'wb') as fp :
+    with open("testImages/TestImageRes2.jpeg", 'wb') as fp :
         fp.write(response.content)
         print("Done saving file")
 else :
     print(f"Response code: {response.status_code}")
     print(response.content)
-    
-
