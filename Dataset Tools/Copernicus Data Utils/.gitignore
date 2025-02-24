@@ -175,3 +175,4 @@ Scripts
 pyvenv.cfg
 include
 lib
+Test*.jpeg
