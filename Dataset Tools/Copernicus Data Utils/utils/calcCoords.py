@@ -1,14 +1,16 @@
 import math
 
+from typing import Union
+
 def getLatDiff(dist: float) -> float :
     # Assumption, distance is given in kilometers
     res = (1 / 110.574) * dist
-    return res
+    return round(res, 7)
 
 def getLongDiff(dist: float, lat: float) -> float :
     latInRad = math.radians(lat)
     res = (1 / (111.320 * math.cos(latInRad))) * dist
-    return res
+    return round(res, 7)
 
 def addLat(valA: float, valB: float) -> float :
     res = valA + valB
@@ -26,7 +28,7 @@ def addLong(valA: float, valB: float) -> float :
 
     return res
 
-def getCoords(initLong: float, initLat: float) -> tuple[list[float | list[float]]] :
+def getCoords(initLong: float, initLat: float) -> tuple[list[Union[float, list[float]]]] :
     # Step 1
     # Coords 50KM East
     NELat = initLat
@@ -48,8 +50,8 @@ def getCoords(initLong: float, initLat: float) -> tuple[list[float | list[float]
     return (allCoords, bbox)
 
 if __name__ == "__main__" :
-    initLong = 0
-    initLat = 0
+    initLong = 69.62000299606157
+    initLat = 28.848395577528557
 
     allCoords, bbox = getCoords(initLong, initLat)
 

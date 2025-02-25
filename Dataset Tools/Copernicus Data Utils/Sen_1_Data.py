@@ -1,13 +1,18 @@
 from AuthClient import SessionData
 from utils.aspectRatio import calculate_aspect_ratio
+from utils.calcCoords import getCoords
 
 oauth, token = SessionData
 
 IW_COLLECTION_ID = 'byoc-3c662330-108b-4378-8899-525fd5a225cb'
+INITIAL_LONGITUDE = 75.41529108199907
+INITIAL_LATITUDE = 27.136261288968445
+
+coords_data = getCoords(INITIAL_LONGITUDE, INITIAL_LATITUDE)
 
 # Earth engine format
 # Coords are in (longitude, latitude) format
-boxCoords = [[88.32709981036963,22.567793946666132], [88.4410829646665,22.567793946666132], [88.4410829646665,22.769912393094224], [88.32709981036963,22.769912393094224]]
+boxCoords = coords_data[0]
 
 ########################################################################
 #                       IMAGE PROPERTIES                               #
@@ -15,15 +20,11 @@ boxCoords = [[88.32709981036963,22.567793946666132], [88.4410829646665,22.567793
 
 ratio = calculate_aspect_ratio(boxCoords[::-1])
 
-img_height = 256
-img_width = int(img_height * ratio)
+img_height = 2500
+# img_width = int(img_height * ratio)
+img_width = 2500
 
-bbox = [
-    88.4410829646665,
-    22.567793946666132,
-    88.32709981036963,
-    22.769912393094224
-]
+bbox = coords_data[1]
 
 evalScript = """
 //VERSION=3
@@ -41,10 +42,10 @@ function evaluatePixel(sample) {
 """
 
 ########################################################################
-#                           LOCATION DATA                              #
+#                    LOCATION AND SEASON DATA                          #
 ########################################################################
 
-# TODO Location data
+# TODO Location data and season data
 
 ########################################################################
 #                              REQUEST                                 #
@@ -87,7 +88,7 @@ response = oauth.post(url, json=request)
 
 if response.ok :
     print("Response OK")
-    with open("testImages/TestImageRes2.jpeg", 'wb') as fp :
+    with open("testImages/TestImageRes4.jpeg", 'wb') as fp :
         fp.write(response.content)
         print("Done saving file")
 else :
