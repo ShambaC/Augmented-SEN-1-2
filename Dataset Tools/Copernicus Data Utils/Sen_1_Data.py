@@ -1,8 +1,28 @@
 from AuthClient import SessionData
+from utils.aspectRatio import calculate_aspect_ratio
 
 oauth, token = SessionData
 
 IW_COLLECTION_ID = 'byoc-3c662330-108b-4378-8899-525fd5a225cb'
+
+# Earth engine format
+boxCoords = [[88.32709981036963,22.567793946666132], [88.4410829646665,22.567793946666132], [88.4410829646665,22.769912393094224], [88.32709981036963,22.769912393094224]]
+
+########################################################################
+#                       IMAGE PROPERTIES                               #
+########################################################################
+
+ratio = calculate_aspect_ratio(boxCoords[::-1])
+
+img_height = 2500
+img_width = int(img_height * ratio)
+
+bbox = [
+    88.4410829646665,
+    22.567793946666132,
+    88.32709981036963,
+    22.769912393094224
+]
 
 evalScript = """
 //VERSION=3
@@ -19,15 +39,20 @@ function evaluatePixel(sample) {
 
 """
 
+########################################################################
+#                           LOCATION DATA                              #
+########################################################################
+
+# TODO Location data
+
+########################################################################
+#                              REQUEST                                 #
+########################################################################
+
 request = {
     "input": {
         "bounds": {
-            "bbox": [
-                88.4410829646665,
-                22.567793946666132,
-                88.32709981036963,
-                22.769912393094224
-            ]
+            "bbox": bbox
         },
         "data": [
             {
@@ -42,8 +67,8 @@ request = {
         ]
     },
     "output": {
-        "width": 1400,
-        "height": 2500,
+        "width": img_width,
+        "height": img_height,
         "responses": [
             {
                 "identifier": "default",
