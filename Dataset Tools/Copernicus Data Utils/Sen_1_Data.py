@@ -45,7 +45,25 @@ function evaluatePixel(sample) {
 #                    LOCATION AND SEASON DATA                          #
 ########################################################################
 
-# TODO Location data and season data
+import pandas as pd
+from pathlib import Path
+
+season_map = {}
+
+season = "winter"
+region = ""
+
+Path(f"./Images/{season}").mkdir(parents=True, exist_ok=True)
+
+if INITIAL_LATITUDE <= 23.5 and INITIAL_LATITUDE >= -23.5 :
+    region = "tropical"
+elif (INITIAL_LATITUDE > 23.5 and INITIAL_LATITUDE < 66.5) or (INITIAL_LATITUDE < -23.5 and INITIAL_LATITUDE > -66.5) :
+    region = "temperate"
+else :
+    region = "arctic"
+
+# TODO Implement looping on coords
+fileName = f"Images/{season}/img_{region}_0.png"
 
 ########################################################################
 #                              REQUEST                                 #
@@ -60,8 +78,8 @@ request = {
             {
                 "dataFilter": {
                     "timerange": {
-                        "from": "2024-11-29T23:59:59Z",
-                        "to": "2024-12-01T00:00:00Z"
+                        "from": "2023-11-29T23:59:59Z",
+                        "to": "2024-01-01T00:00:00Z"
                     }
                 },
                 "type": IW_COLLECTION_ID
@@ -75,7 +93,7 @@ request = {
             {
                 "identifier": "default",
                 "format": {
-                    "type": "image/jpeg"
+                    "type": "image/png"
                 }
             }
         ]
@@ -88,7 +106,7 @@ response = oauth.post(url, json=request)
 
 if response.ok :
     print("Response OK")
-    with open("testImages/TestImageRes4.jpeg", 'wb') as fp :
+    with open(fileName, 'wb') as fp :
         fp.write(response.content)
         print("Done saving file")
 else :
