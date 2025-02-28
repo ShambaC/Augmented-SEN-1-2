@@ -1,5 +1,4 @@
 from AuthClient import SessionData
-from utils.aspectRatio import calculate_aspect_ratio
 from utils.calcCoords import getCoords
 
 oauth, token = SessionData
@@ -18,10 +17,7 @@ boxCoords = coords_data[0]
 #                       IMAGE PROPERTIES                               #
 ########################################################################
 
-ratio = calculate_aspect_ratio(boxCoords[::-1])
-
 img_height = 2500
-# img_width = int(img_height * ratio)
 img_width = 2500
 
 bbox = coords_data[1]
