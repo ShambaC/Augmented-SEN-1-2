@@ -5,16 +5,16 @@ Script to generate coords with 50KM gaps between two specified coords
 from utils.calcCoords import getCoords
 import curses
 
-START_LATITUDE = 0
-START_LONGITUDE = 0
+START_LATITUDE = 28.718101270763515
+START_LONGITUDE = 68.53721319020808
 
-END_LATITUDE = 0
-END_LONGITUDE = 0
+END_LATITUDE = 25.193561243223677
+END_LONGITUDE = 77.94151006520808
 
 current_lat = START_LATITUDE
 current_long = START_LONGITUDE
 
-output_file = open("CoordsList.txt", 'w')
+output_file = open("../CoordsList.txt", 'w')
 output_file.write(f"{START_LONGITUDE},{START_LATITUDE}\n")
 
 i, j = 0, 0
@@ -22,7 +22,7 @@ stdscr = curses.initscr()
 stdscr.addstr("")
 stdscr.refresh()
 
-while current_lat < END_LATITUDE :
+while current_lat > END_LATITUDE :
     i += 1
     while current_long < END_LONGITUDE :
         j += 1
@@ -40,6 +40,8 @@ while current_lat < END_LATITUDE :
         current_long = next_long
 
     current_long = START_LONGITUDE
-    next_set, _ = getCoords()
+    next_set, _ = getCoords(current_long, current_lat)
+    current_lat = next_set[0][1]
 
+print("\nDone generating coords list")
 curses.endwin()
