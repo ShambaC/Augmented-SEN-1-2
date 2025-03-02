@@ -107,15 +107,15 @@ def saveImage(long: float, lat: float, idx: int, log_file: TextIOWrapper) -> tup
     response = oauth.post(url, json=request)
 
     if response.ok :
-        log_file.write("Response OK")
+        log_file.write("Response OK\n")
         with open(fileName, 'wb') as fp :
             fp.write(response.content)
 
-        log_file.write("Done saving file")
+        log_file.write("Done saving file\n\n")
         return (fileName, region, season)
     else :
-        log_file.write(f"Response code: {response.status_code}")
-        log_file.write(response.content)
+        log_file.write(f"Response code: {response.status_code}\n")
+        log_file.write(f"{response.content}\n\n")
         return ("error", "error", "error")
 
 
@@ -126,8 +126,8 @@ if __name__ == "__main__" :
     df = pd.read_csv("CoordsList.txt", header=None, names=['long', 'lat'])
     prompt_dict = {}
 
-    log_file = open("LOG.txt", 'r+')
-    log_file.write(f"LOGS FOR: {datetime.datetime.now()}")
+    log_file = open("LOG.txt", 'w+')
+    log_file.write(f"LOGS FOR: {datetime.datetime.now()}\n")
 
     for idx, row in tqdm(df.iterrows(), total=df.shape[0]) :
         long = row.long
@@ -142,3 +142,4 @@ if __name__ == "__main__" :
 
     prompt_df = pd.DataFrame(prompt_dict)
     prompt_df.to_csv("Images/prompts.csv", index=False)
+    log_file.close()
