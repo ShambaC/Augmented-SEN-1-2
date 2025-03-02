@@ -11,27 +11,29 @@ import os
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
-# Client credentials
-client_id = os.environ["CLIENT-ID"]
-client_secret = os.environ["CLIENT-SECRET"]
+def getOAuth() :
+    # Client credentials
+    client_id = os.environ["CLIENT-ID"]
+    client_secret = os.environ["CLIENT-SECRET"]
 
-# Create session
-client = BackendApplicationClient(client_id=client_id)
-oauth = OAuth2Session(client=client)
+    # Create session
+    client = BackendApplicationClient(client_id=client_id)
+    oauth = OAuth2Session(client=client)
 
-# Get token
-token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token',
-                          client_secret=client_secret,
-                          include_client_id=True)
+    # Get token
+    token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token',
+                            client_secret=client_secret,
+                            include_client_id=True)
 
-# Proper error handling
-def sentinelhub_compliance_hook(response):
-    response.raise_for_status()
-    return response
+    # Proper error handling
+    def sentinelhub_compliance_hook(response):
+        response.raise_for_status()
+        return response
 
-oauth.register_compliance_hook("access_token_response", sentinelhub_compliance_hook)
+    oauth.register_compliance_hook("access_token_response", sentinelhub_compliance_hook)
 
-SessionData = (oauth, token)
+    SessionData = (oauth, token)
+    return SessionData
 
 # Test
 if __name__ == "__main__" :
