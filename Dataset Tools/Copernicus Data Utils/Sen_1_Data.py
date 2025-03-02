@@ -124,9 +124,9 @@ if __name__ == "__main__" :
 
     # Iterate through rows and download images
     df = pd.read_csv("CoordsList.txt", header=None, names=['long', 'lat'])
-    prompt_dict = {}
+    prompt_list = []
 
-    log_file = open("LOG.txt", 'w+')
+    log_file = open("LOG.txt", 'a')
     log_file.write(f"LOGS FOR: {datetime.datetime.now()}\n")
 
     oauth, token = getOAuth()
@@ -145,8 +145,8 @@ if __name__ == "__main__" :
         if fileName.strip().lower() == "error" :
             continue
 
-        prompt_dict[fileName] = f"Season: {season}, Region: {region}"
+        prompt_list.append([fileName, f"Season: {season}, Region: {region}"])
 
-    prompt_df = pd.DataFrame(prompt_dict)
+    prompt_df = pd.DataFrame(prompt_list, columns=['fileName', 'prompt'])
     prompt_df.to_csv("Images/prompts.csv", index=False)
     log_file.close()
