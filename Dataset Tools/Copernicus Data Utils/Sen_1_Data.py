@@ -1,6 +1,7 @@
 from AuthClient import SessionData
 from utils.calcCoords import getCoords
 from tqdm import tqdm
+from io import TextIOWrapper
 
 import pandas as pd
 
@@ -8,7 +9,7 @@ oauth, token = SessionData
 
 IW_COLLECTION_ID = 'byoc-3c662330-108b-4378-8899-525fd5a225cb'
 
-def saveImage(long: float, lat: float, idx: int) -> tuple[str] :
+def saveImage(long: float, lat: float, idx: int, log_file: TextIOWrapper) -> tuple[str] :
     INITIAL_LONGITUDE = long
     INITIAL_LATITUDE = lat
 
@@ -106,28 +107,33 @@ def saveImage(long: float, lat: float, idx: int) -> tuple[str] :
     response = oauth.post(url, json=request)
 
     if response.ok :
-        print("Response OK")
+        log_file.write("Response OK")
         with open(fileName, 'wb') as fp :
             fp.write(response.content)
 
-        print("Done saving file")
+        log_file.write("Done saving file")
         return (fileName, region, season)
     else :
-        print(f"Response code: {response.status_code}")
-        print(response.content)
+        log_file.write(f"Response code: {response.status_code}")
+        log_file.write(response.content)
         return ("error", "error", "error")
 
 
 if __name__ == "__main__" :
+    import datetime
+
     # Iterate through rows and download images
     df = pd.read_csv("CoordsList.txt", header=None, names=['long', 'lat'])
     prompt_dict = {}
+
+    log_file = open("LOG.txt", 'r+')
+    log_file.write(f"LOGS FOR: {datetime.datetime.now()}")
 
     for idx, row in tqdm(df.iterrows(), total=df.shape[0]) :
         long = row.long
         lat = row.lat
 
-        fileName, region, season = saveImage(long, lat, idx)
+        fileName, region, season = saveImage(long, lat, idx, log_file)
         
         if fileName.strip().lower() == "error" :
             continue
