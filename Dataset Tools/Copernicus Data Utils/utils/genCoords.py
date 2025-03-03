@@ -14,7 +14,7 @@ END_LONGITUDE = 77.94151006520808
 current_lat = START_LATITUDE
 current_long = START_LONGITUDE
 
-output_file = open("../CoordsList.txt", 'w')
+output_file = open("../CoordsList.txt", 'a')
 output_file.write(f"{START_LONGITUDE},{START_LATITUDE}\n")
 
 i, j = 0, 0

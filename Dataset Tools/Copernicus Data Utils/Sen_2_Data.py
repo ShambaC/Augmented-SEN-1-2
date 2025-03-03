@@ -6,7 +6,7 @@ from requests_oauthlib import OAuth2Session
 
 import pandas as pd
 
-IW_COLLECTION_ID = 'byoc-3c662330-108b-4378-8899-525fd5a225cb'
+SEN2_COLLECTION_ID = 'byoc-5460de54-082e-473a-b6ea-d5cbe3c17cca'
 
 def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file: TextIOWrapper) -> tuple[str] :
     INITIAL_LONGITUDE = long
@@ -31,13 +31,13 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     //VERSION=3
     function setup() {
         return {
-            input: ["VV"],
-            output: { bands: 1 }
+            input: ["B02", "B03", "B04"],
+            output: { bands: 3 }
         };
     }
 
     function evaluatePixel(sample) {
-        return [sample.VV];
+        return [2.5 * sample.B04/10000, 2.5 * sample.B03/10000, 2.5 * sample.B02/10000];
     }
 
     """
@@ -55,7 +55,7 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     toDateTime = "2024-01-01T00:00:00Z"
     region = ""
 
-    Path(f"./Images/{season}/s1_{folder}").mkdir(parents=True, exist_ok=True)
+    Path(f"./Images/{season}/s2_{folder}").mkdir(parents=True, exist_ok=True)
 
     if INITIAL_LATITUDE <= 23.5 and INITIAL_LATITUDE >= -23.5 :
         region = "tropical"
@@ -65,7 +65,7 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
         region = "arctic"
 
     # TODO Implement looping on coords
-    fileName = f"Images/{season}/s1_{folder}/{season}_img_{region}_p{idx}.png"
+    fileName = f"Images/{season}/s2_{folder}/{season}_img_{region}_p{idx}.png"
 
     ########################################################################
     #                              REQUEST                                 #
@@ -84,7 +84,7 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
                             "to": toDateTime
                         }
                     },
-                    "type": IW_COLLECTION_ID
+                    "type": SEN2_COLLECTION_ID
                 }
             ]
         },
@@ -112,7 +112,7 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
             fp.write(response.content)
 
         log_file.write("Done saving file\n\n")
-        return (f"{season}/s1_{folder}/{season}_img_{region}_p{idx}.png", region, season)
+        return (fileName, region, season)
     else :
         log_file.write(f"Response code: {response.status_code}\n")
         log_file.write(f"{response.content}\n\n")
@@ -125,7 +125,6 @@ if __name__ == "__main__" :
 
     # Iterate through rows and download images
     df = pd.read_csv("CoordsList.txt", header=None, names=['long', 'lat'])
-    prompt_list = []
 
     log_file = open("LOG.txt", 'a')
     log_file.write(f"LOGS FOR: {datetime.datetime.now()}\n")
@@ -146,8 +145,4 @@ if __name__ == "__main__" :
         if fileName.strip().lower() == "error" :
             continue
 
-        prompt_list.append([fileName, f"Season: {season}, Region: {region}"])
-
-    prompt_df = pd.DataFrame(prompt_list, columns=['fileName', 'prompt'])
-    prompt_df.to_csv("Images/prompts.csv", index=False)
     log_file.close()
