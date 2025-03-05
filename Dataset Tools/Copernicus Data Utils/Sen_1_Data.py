@@ -50,7 +50,7 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     from pathlib import Path
 
     season = "winter"
-    folder = "147"
+    folder = "171"
     fromDateTime = "2023-11-29T23:59:59Z"
     toDateTime = "2024-01-01T00:00:00Z"
     region = ""
@@ -112,11 +112,11 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
             fp.write(response.content)
 
         log_file.write("Done saving file\n\n")
-        return (f"{season}/s1_{folder}/{season}_img_{region}_p{idx}.png", region, season)
+        return (f"{season}/s1_{folder}/{season}_img_{region}_p{idx}.png", f"{season}/s2_{folder}/{season}_img_{region}_p{idx}.png", region, season)
     else :
         log_file.write(f"Response code: {response.status_code}\n")
         log_file.write(f"{response.content}\n\n")
-        return ("error", "error", "error")
+        return ("error", "error", "error", "error")
 
 
 if __name__ == "__main__" :
@@ -141,13 +141,13 @@ if __name__ == "__main__" :
         long = row.long
         lat = row.lat
 
-        fileName, region, season = saveImage(oauth, long, lat, idx, log_file)
+        s1_fileName, s2_fileName, region, season = saveImage(oauth, long, lat, idx, log_file)
         
-        if fileName.strip().lower() == "error" :
+        if s1_fileName.strip().lower() == "error" :
             continue
 
-        prompt_list.append([fileName, f"Season: {season}, Region: {region}"])
+        prompt_list.append([s1_fileName, s2_fileName, f"Season: {season}, Region: {region}"])
 
-    prompt_df = pd.DataFrame(prompt_list, columns=['fileName', 'prompt'])
-    prompt_df.to_csv("Images/prompts.csv", index=False)
+    prompt_df = pd.DataFrame(prompt_list, columns=['s1_fileName', 's2_fileName', 'prompt'])
+    prompt_df.to_csv("Images/prompts_172.csv", index=False)
     log_file.close()
