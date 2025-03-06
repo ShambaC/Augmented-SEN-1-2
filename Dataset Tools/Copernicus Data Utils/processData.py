@@ -4,7 +4,7 @@ from tqdm import tqdm
 import pandas as pd
 import cv2 as cv
 
-df = pd.read_csv("./Images/prompts.csv")
+df = pd.read_csv("./Images/prompts_172.csv")
 promptList = []
 
 outputFolder_s1 = Path(df.iloc[0].s1_fileName).parent.__str__()
@@ -42,6 +42,6 @@ for idx, row in tqdm(df.iterrows(), total=df.shape[0]) :
             ])
         
 prompt_df = pd.DataFrame(promptList, columns=["s1_fileName", "s2_fileName", "prompt"])
-prompt_df.to_csv("../../Dataset/winter/prompts_170.csv", index=False)
+prompt_df.to_csv("../../Dataset/winter/prompts_172.csv", index=False)
 
 print("DONE")
