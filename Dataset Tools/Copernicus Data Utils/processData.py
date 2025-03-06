@@ -1,5 +1,5 @@
 from pathlib import Path
-from tqdm import tqdm, trange
+from tqdm import tqdm
 
 import pandas as pd
 import cv2 as cv
@@ -22,12 +22,12 @@ for idx, row in tqdm(df.iterrows(), total=df.shape[0]) :
     season = extracted_info[0]
     region = extracted_info[2]
 
-    for i in trange(81) :
+    for i in tqdm(range(81), leave=False) :
 
         k += 1
 
         x = i % 9   # Move columns
-        y = i / 9   # Move rows
+        y = i // 9   # Move rows
 
         crop_s1 = s1_image[256*x : 256*(x+1), 256*y : 256*(y+1)]
         crop_s2 = s2_image[256*x : 256*(x+1), 256*y : 256*(y+1)]
@@ -42,6 +42,6 @@ for idx, row in tqdm(df.iterrows(), total=df.shape[0]) :
             ])
         
 prompt_df = pd.DataFrame(promptList, columns=["s1_fileName", "s2_fileName", "prompt"])
-prompt_df.to_csv("../../Dataset/winter/prompt.csv")
+prompt_df.to_csv("../../Dataset/winter/prompts_170.csv", index=False)
 
 print("DONE")
