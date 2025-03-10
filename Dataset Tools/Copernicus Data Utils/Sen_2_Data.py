@@ -49,8 +49,8 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     import pandas as pd
     from pathlib import Path
 
-    season = "winter"
-    folder = "172"
+    season = "summer"
+    folder = "160"
     fromDateTime = "2023-11-29T23:59:59Z"
     toDateTime = "2024-01-01T00:00:00Z"
     region = ""

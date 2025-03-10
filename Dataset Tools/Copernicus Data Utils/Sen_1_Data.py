@@ -49,8 +49,8 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     import pandas as pd
     from pathlib import Path
 
-    season = "winter"
-    folder = "172"
+    season = "summer"
+    folder = "160"
     fromDateTime = "2023-11-29T23:59:59Z"
     toDateTime = "2024-01-01T00:00:00Z"
     region = ""
@@ -149,5 +149,5 @@ if __name__ == "__main__" :
         prompt_list.append([s1_fileName, s2_fileName, f"Season: {season}, Region: {region}"])
 
     prompt_df = pd.DataFrame(prompt_list, columns=['s1_fileName', 's2_fileName', 'prompt'])
-    prompt_df.to_csv("Images/prompts_172.csv", index=False)
+    prompt_df.to_csv("Images/prompts_160.csv", index=False)
     log_file.close()
