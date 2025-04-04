@@ -1,11 +1,11 @@
 The dataset format remains unchanged. The pairs of images are divided between 4 seasons and are grouped by regions into specific folders. However, the data acquiring process has been changed slightly. On top using Google Earth Engine\cite{GORELICK201718} we also use the Copernicus Data Space Ecosystem API to access Sentinel data.
 
 \subsection{Image format}
-The images are in png format with the dimension of $256\times256$ pixels. The scale or zoom level of the image in terms of distance is 20m. Now, the sentinel satelite specific image details will be defined in the following points:
+The images are in png format with the dimension of $256\times256$ pixels. The scale or zoom level of the image in terms of distance is 20m. Now, the sentinel satellite specific image details will be defined in the following points:
 \begin{itemize}
-    \item \textbf{Sentinel-1:} The images are taken from the IW mode of the satelite nad are in VV polarization. It comprises of only a single band.
+    \item \textbf{Sentinel-1:} The images are taken from the IW acquisition mode of the satellite and are in VV polarization. It comprises of only a single band.
     \item \textbf{Sentinel-2:} The images consist of 3 bands for Red, Green and Blue. The bands are also scaled for proper visualisation.
 \end{itemize}
 
 \subsection{Copernicus API Method}
-This section contains the overview of how copernicus API was used to get the images. 
+This section contains an overview of how the copernicus API was used to obtain the images.
