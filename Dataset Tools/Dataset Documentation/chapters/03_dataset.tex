@@ -8,7 +8,7 @@ The images are in png format with the dimension of $256\times256$ pixels. The sc
 \end{itemize}
 
 \subsection{Copernicus API Method}
-Copernicus Data Space Ecosystem with a tagline of Europe's eyes on Earth is an open ecosystem that provides free instant access to a wide range of data and services from the Copernicus Sentinel missions. It provides data from all Sentinel satellites in various forms. For Sentinel-1 images, we used the 'Level 3 Monthly Mosaics' collection, and for Sentinel-2 we used the 'Level 3 Quaterly Mosaics' collection.
+Copernicus Data Space Ecosystem with a tagline of Europe's eyes on Earth is an open ecosystem that provides free instant access to a wide range of data and services from the Copernicus Sentinel missions\cite{copernicusHome}. It provides data from all Sentinel satellites in various forms. For Sentinel-1 images, we used the 'Level 3 Monthly Mosaics' collection, and for Sentinel-2 we used the 'Level 3 Quaterly Mosaics' collection.
 The following sections contain an overview of how the copernicus API was used to obtain the images.
 
 \subsubsection{Generating coordinates}
@@ -30,4 +30,48 @@ Thus, we need to create square patches with 50 KM distances as the side of the s
 Thus, we end up with a list of coordinates for all subregions formed from the original selection.
 
 \subsubsection{Authentication}
-In order to use the API of copernicus sentinel hub, we need to authenticate ourselves and obtain an access token.
+In order to use the API of copernicus sentinel hub, we need to authenticate ourselves and obtain an access token. Therefore, client id and client secret are used to fetch a token and authenticate ourself.
+
+\subsubsection{Defining Image properties}
+AFter authentication, the image properties are set in preparation of the image download. This is where the difference in obtaining Sentinel-1 and Sentinel-2 images appear due to differences in image formats.
+
+We set the image height and width to 2500 pixels each. Following that, the eval script is set. An eval script is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub\cite{evalDoc}. Two different eval scripts are used for Sentinel-1 and Sentinel-2 images due to different number of bands being used in the images.
+
+The Sentinel-1 eval script is as follows:
+
+\begin{lstlisting}
+    //VERSION=3
+    function setup() {
+        return {
+            input: ["VV"],
+            output: { bands: 1 }
+        };
+    }
+
+    function evaluatePixel(sample) {
+        return [sample.VV];
+    }
+\end{lstlisting}
+
+The Sentinel-2 eval script is as follows:
+
+\begin{lstlisting}
+    //VERSION=3
+    function setup() {
+        return {
+            input: ["B02", "B03", "B04"],
+            output: { bands: 3 }
+        };
+    }
+
+    function evaluatePixel(sample) {
+        return [2.5 * sample.B04/10000, 2.5 * sample.B03/10000, 2.5 * sample.B02/10000];
+    }
+\end{lstlisting}
+
+From the eval scripts we can infer that Sentinel-1 images have one band, called "VV". It is the polarization of the captured image. "VV" is vertical polarization, i.e.,  vertically transmit and vertically receive. And Sentinel-2 images have 3 bands, namely, B02, B03, B04. The bands are for Blue, Green, and Red channel respectively. The Sentinel-2 images are also preprocessed before download by scaling and normalizing the pixel values. 
+
+Then, bounding box coordinates and time frame for images are sent with the request along with the previously mentioned data.
+
+\subsubsection{Adding Region Data}
+Now, the new addition in our dataset is the temperature region information.
