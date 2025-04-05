@@ -8,4 +8,26 @@ The images are in png format with the dimension of $256\times256$ pixels. The sc
 \end{itemize}
 
 \subsection{Copernicus API Method}
-This section contains an overview of how the copernicus API was used to obtain the images.
+Copernicus Data Space Ecosystem with a tagline of Europe's eyes on Earth is an open ecosystem that provides free instant access to a wide range of data and services from the Copernicus Sentinel missions. It provides data from all Sentinel satellites in various forms. For Sentinel-1 images, we used the 'Level 3 Monthly Mosaics' collection, and for Sentinel-2 we used the 'Level 3 Quaterly Mosaics' collection.
+The following sections contain an overview of how the copernicus API was used to obtain the images.
+
+\subsubsection{Generating coordinates}
+The Copernicus service provides a limited number of API calls per month for free users (30,000 calls). To maximize efficiency of API call usage, we decided to obtain images of the maximum size limit offered by Copernicus. The maximum limit is $2500\times2500$ pixels per image. Now, the scale of images in SEN1-2 dataset is 20m.
+
+\begin{align*}
+    \text{Hence, ground distance per pixels} &= 20m \\
+    \text{Total distance for 2500x image is} &= 20\times2500 \\
+    &= 50,000m
+\end{align*}
+
+Thus, we need to create square patches with 50 KM distances as the side of the said patch. For this task, we first select a region in Google Earth Engine using the rectangular selection tool. We can then obtain the coordinates for the four corners of the selection. We use these coordinates to divide the region into multiple square regions with 50 KM side. To perform the division we calculate subsequent latitude and longitude coordinates beginning from the top left corner of the selection. The formula for approximately converting Longitude and Latitude into kilometers are:
+
+\begin{itemize}
+    \item \textbf{Latitude: } $1^\circ = 110.574$KM
+    \item \textbf{Longitude:} $1^\circ = 111.320\times cos(latitude)$ KM
+\end{itemize}
+
+Thus, we end up with a list of coordinates for all subregions formed from the original selection.
+
+\subsubsection{Authentication}
+In order to use the API of copernicus sentinel hub, we need to authenticate ourselves and obtain an access token.
