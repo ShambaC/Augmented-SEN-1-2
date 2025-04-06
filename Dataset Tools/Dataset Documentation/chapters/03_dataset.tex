@@ -1,4 +1,4 @@
-The dataset format remains unchanged. The pairs of images are divided between 4 seasons and are grouped by regions into specific folders. However, the data acquiring process has been changed slightly. On top using Google Earth Engine\cite{GORELICK201718} we also use the Copernicus Data Space Ecosystem API to access Sentinel data.
+The dataset format remains unchanged. The pairs of images are divided between 4 seasons and are grouped by regions into specific folders. However, the data acquiring process has been changed slightly. On top of using Google Earth Engine\cite{GORELICK201718} we also use the Copernicus Data Space Ecosystem API to access Sentinel data.
 
 \subsection{Image format}
 The images are in png format with the dimension of $256\times256$ pixels. The scale or zoom level of the image in terms of distance is 20m. Now, the sentinel satellite specific image details will be defined in the following points:
@@ -74,4 +74,17 @@ From the eval scripts we can infer that Sentinel-1 images have one band, called 
 Then, bounding box coordinates and time frame for images are sent with the request along with the previously mentioned data.
 
 \subsubsection{Adding Region Data}
-Now, the new addition in our dataset is the temperature region information.
+Now, the new addition in our dataset is the temperature region information. Temperature regions are also known as heat zones of the Earth. There are three heat zones, Arctic or Frigid zone, Temperate zone, and Tropical or Torrid Zone. These zones are classified according to latitude.
+
+\begin{itemize}
+    \item Tropical Zone: It lies between the Tropic of Cancer ($23.5^\circ$ North) and Tropic of Capricorn ($23.5^\circ$ South). This zone receives the most heat from the sun.
+    \item Temperate Zone: In the northern hemisphere, this zone lies between Tropic of Cancer and the Arctic circle ($66.5^\circ$ North). In the southern hemisphere, it lies between Tropic of Capricorn and Antarctic circle ($66.5^\circ$ South).This region is moderately cooler compared to the tropical region.
+    \item Arctic Zone: In the northern hemisphere, it is located between the North Pole ($90^\circ$ North) and Arctic circle. In the southern hemisphere, it lies between the South Pole ($90^\circ$ South) and the Antarctic circle. This region is the coldest region of them all.
+\end{itemize}
+
+We have decided to include lesser amounts of arctic zone data as those images majorly consist of snow wihtout much variation.
+
+Therefore, the region is calculated based on the latitude and is written to a csv file. The csv files are made on a per region folder basis.
+
+\subsubsection{First manual inspection}
+Once the images are downloaded, the first manual inspection is performed.
