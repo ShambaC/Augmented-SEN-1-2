@@ -87,4 +87,18 @@ We have decided to include lesser amounts of arctic zone data as those images ma
 Therefore, the region is calculated based on the latitude and is written to a csv file. The csv files are made on a per region folder basis.
 
 \subsubsection{First manual inspection}
-Once the images are downloaded, the first manual inspection is performed.
+Once the images are downloaded, the first manual inspection is performed. We check the pair of images to verify that the images contain visible patterns and variations throughout its entirety. Images which had regions of no variation were discarded.
+
+Moreover, unlike the original dataset, cloud coverage was not an issue as the Sentinel-2 Monthly Mosaics were cloud optimized images.
+
+\subsubsection{Cropping images}
+After the first manual inspection, the images were cropped and divided into multiple smaller images to match the dimensions of the original dataset. The downloaded images have a dimension of $2500\times2500$ pixels. They are divided into 81 $256\times256$ sized images each. This results in a minor loss of information. Figure \ref{fig:cropStep} shows the visualisation of this step.
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{cropStep.png}
+    \caption{Image demonstrating the step of cropping and dividing the large image into smaller images.}
+    \label{fig:cropStep}
+\end{figure*}
+
+\subsubsection{Second manual inspection}
+Once the images are cropped and divided into smaller images, one last manual inspection is performed. The purpose of this inspection is the same as the first manual inspection, to verify variations in images. This check is performed to ensure no plain images exist in the dataset.
