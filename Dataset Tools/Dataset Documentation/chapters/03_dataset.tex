@@ -104,7 +104,24 @@ After the first manual inspection, the images were cropped and divided into mult
 Once the images are cropped and divided into smaller images, one last manual inspection is performed. The purpose of this inspection is the same as the first manual inspection, to verify variations in images. This check is performed to ensure no plain images exist in the dataset.
 
 \subsection{Google Earth Engine Method}
-TODO for Ankana
+The second method that we have used to extend the already existing datasets is using the \textbf{Google Earth Engine (GEE)}. Google Earth Engine is a cloud-based geospatial analysis platform that enables users to visualize and analyze satellite images of our planet. In this section, we have extended the Sentinel-1 and Sentinel-2 datasets by keeping the original dataset formats intact.
+
+We have selected 8 regions on the world map and stored them as variables. Then we have defined the regions with their corresponding seasons, date ranges and folder names. We are considering 4 seasons - \textit{Spring, Summer, Fall} and \textit{Winter} with folder numbers - 149, 142, 146 and 147 respectively. Each season will contain data for both Sentinel-1 and Sentinel-2.
+
+We have also distinguished the regions based on their temperature regions,i.e., - \textit{Tropical, Temperate and Arctic}.
+
+For each region, we are randomly generating \textbf{500 sample points(sample point dimension : 256 * 256 pixels, zoom level : 20m)}. For each point, we are identifying its temperature zone, then generating their Sentinel-1 and Sentinel-2 mosaics and exporting them. For Sentinel-1 images, we are selecting images in \textbf{IW mode with VV polarization} and for Sentinel-2 images, we are selecting images with \textbf{bands B4, B3 and B2} (i.e., red, green and blue channels). The script is as follows:
+
+Finally, we are creating a CSV file with the following columns:
+\begin{itemize}
+    \item Sentinel-1 image file path
+    \item Sentinel-2 image file path
+    \item Prompt(Season and Temperature Region Information)
+    \item Sentinel-1 image
+    \item Sentinel-2 image
+\end{itemize}
+And, exporting the CSV file to Google drive using the \textbf{\texttt{Export.table.toDrive}} function.
+
 
 \subsection{Augmenting Dataset with Heat Zone}
 TODO for Shreyashi.
