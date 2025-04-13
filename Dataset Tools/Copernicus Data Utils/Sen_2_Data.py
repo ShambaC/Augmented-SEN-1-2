@@ -49,10 +49,10 @@ def saveImage(oauth: OAuth2Session, long: float, lat: float, idx: int, log_file:
     import pandas as pd
     from pathlib import Path
 
-    season = "summer"
-    folder = "160"
-    fromDateTime = "2023-11-29T23:59:59Z"
-    toDateTime = "2024-01-01T00:00:00Z"
+    season = "fall"
+    folder = "150"
+    fromDateTime = "2023-09-29T23:59:59Z"
+    toDateTime = "2023-10-30T00:00:00Z"
     region = ""
 
     Path(f"./Images/{season}/s2_{folder}").mkdir(parents=True, exist_ok=True)
