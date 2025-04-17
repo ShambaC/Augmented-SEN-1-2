@@ -1,7 +1,7 @@
 import pandas as pd
 
 season = "winter"
-number = 170
+number = 172
 df = pd.read_csv(f"../../../Dataset/{season}/prompts_{number}.csv")
 
 # Split prompt into individual columns
@@ -15,4 +15,4 @@ df['season'] = df['season'].str.slice(start=8)
 df['region'] = df['region'].str.slice(start=8)
 
 # Save the file
-df.to_csv(f"../../../Dataset/{season}/prompts_{number} up.csv", index=False)
+df.to_csv(f"../../../Dataset/{season}/prompts_{number}.csv", index=False)
