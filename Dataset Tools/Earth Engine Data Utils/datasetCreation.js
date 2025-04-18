@@ -1,20 +1,18 @@
-var greenland = ee.Geometry.Rectangle([-54, 62, -40, 69]); // Autumn (September, 2023)
-var china = ee.Geometry.Rectangle([44.12, 108.25, 44.99, 110.53]); // Summer (April, 2023)
-var australia = ee.Geometry.Rectangle([110, -45, 155, -10]); // Spring (October, 2022)
-var southAfrica = ee.Geometry.Rectangle([10, -35, 40, -15]); // Winter (May, 2023)
-var papuaNewG = ee.Geometry.Rectangle([53.48, -109.44, 66.68, -45.45]); //Autumn (October, 2023)
-var brazil = ee.Geometry.Rectangle([-58, -1, 37, -20]); //Summer (December, 2020)
-var kazakhstan = ee.Geometry.Rectangle([63, 43, 77, 52]); //Spring (March, 2019)
-var northUS = ee.Geometry.Rectangle([-122, 42, -101, 61]); // Winter (January, 2021)
+var greenland = ee.Geometry.Rectangle([-52, 74, -48, 75]); // Autumn (September, 2024)
+var china = ee.Geometry.Rectangle([97, 31, 107, 37]); // Summer (April, 2023)
+var australia = ee.Geometry.Rectangle([120, -28, 125, -23]); // Spring (October, 2022)
+var namibia = ee.Geometry.Rectangle([15, -25, 19, -20]); // Winter (May, 2023)
+var argentina = ee.Geometry.Rectangle([-71, -49, -67, -45]); //Summer (December, 2020)
+var kazakhstan = ee.Geometry.Rectangle([67, 44, 75, 48]); //Spring (March, 2019)
+var northUS = ee.Geometry.Rectangle([-116, 51, -109, 55]); // Winter (January, 2021)
  
 // Define the regions with their corresponding season and date ranges
 var regions = [
   { name: "Greenland", region: greenland, folder_name: '146', season: "Autumn", startDate: '2023-09-01', endDate: '2023-09-30' },
   { name: "China", region: china, folder_name: '142', season: "Summer", startDate: '2023-04-01', endDate: '2023-04-30' },
   { name: "Australia", region: australia, folder_name: '149', season: "Spring", startDate: '2022-10-01', endDate: '2022-10-31' },
-  { name: "Southern Africa", region: southAfrica, folder_name: '147', season: "Winter", startDate: '2023-05-01', endDate: '2023-05-31' },
-  { name: "Papua New Guinea", region: papuaNewG, folder_name: '146', season: "Autumn", startDate: '2023-10-01', endDate: '2023-10-31' },
-  { name: "Brazil", region: brazil, folder_name: '142', season: "Summer", startDate: '2020-12-01', endDate: '2020-12-31' },
+  { name: "Namibia", region: namibia, folder_name: '147', season: "Winter", startDate: '2023-05-01', endDate: '2023-05-31' },
+  { name: "Argentina", region: argentina, folder_name: '142', season: "Summer", startDate: '2020-12-01', endDate: '2020-12-31' },
   { name: "Kazakhstan", region: kazakhstan, folder_name: '149', season: "Spring", startDate: '2019-03-01', endDate: '2019-03-31' },
   { name: "North America", region: northUS, folder_name: '147', season: "Winter", startDate: '2021-01-01', endDate: '2021-01-31' }
 ];
@@ -121,14 +119,13 @@ function generateSamples(regionInfo, numPoints) {
 }
  
 // Generate samples for all regions
-var allSamples0 = ee.FeatureCollection(generateSamples(regions[0], 500));
-var allSamples1 = ee.FeatureCollection(generateSamples(regions[1], 500));
-var allSamples2 = ee.FeatureCollection(generateSamples(regions[2], 500));
-var allSamples3 = ee.FeatureCollection(generateSamples(regions[3], 500));
-var allSamples4 = ee.FeatureCollection(generateSamples(regions[4], 500));
-var allSamples5 = ee.FeatureCollection(generateSamples(regions[5], 500));
-var allSamples6 = ee.FeatureCollection(generateSamples(regions[6], 500));
-var allSamples7 = ee.FeatureCollection(generateSamples(regions[7], 500));
+var allSamples0 = ee.FeatureCollection(generateSamples(regions[0], 200));
+var allSamples1 = ee.FeatureCollection(generateSamples(regions[1], 200));
+var allSamples2 = ee.FeatureCollection(generateSamples(regions[2], 200));
+var allSamples3 = ee.FeatureCollection(generateSamples(regions[3], 200));
+var allSamples4 = ee.FeatureCollection(generateSamples(regions[4], 200));
+var allSamples5 = ee.FeatureCollection(generateSamples(regions[5], 200));
+var allSamples6 = ee.FeatureCollection(generateSamples(regions[6], 200));
 
 var allSamples = allSamples0
   .merge(allSamples1)
@@ -137,7 +134,6 @@ var allSamples = allSamples0
   .merge(allSamples4)
   .merge(allSamples5)
   .merge(allSamples6)
-  .merge(allSamples7)
 
 print(allSamples);
  
