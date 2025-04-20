@@ -15,4 +15,4 @@ df['season'] = df['season'].str.slice(start=8)
 df['region'] = df['region'].str.slice(start=8)
 
 # Save the file
-df.to_csv(f"../../../Dataset/{season}/prompts_{number}.csv", index=False)
+df.to_csv(f"../../../Dataset/{season}/info_{number}.csv", index=False)

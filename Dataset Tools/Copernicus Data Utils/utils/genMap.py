@@ -5,14 +5,13 @@ import cartopy.feature as cfeature
 from matplotlib.patches import Rectangle
 
 regions = [
-    (69, -54, 62, -40),
-    (110.53, 44.12, 108.25, 44.99),
-    (-10, 110, -45, 155),
-    (-15, 10, -35, 40),
-    (-45.45, 53.48, -109.44, 66.68),
-    (-20, -58, -1, 37),
-    (52, 63, 43, 77),
-    (61, -122, 42, -101),
+    (75, -52, 74, -48),
+    (37, 97, 31, 107),
+    (-23, 120, -28, 125),
+    (-20, 15, -25, 19),
+    (-45, -71, -49, -67),
+    (48, 67, 44, 75),
+    (55, -116, 51, -109),
     (3.837160765147294, 101.02924793136883, 2.4879317744244784, 102.77607410324383),
     (40.17147954557868, 69.06685797151498, 37.65007089513811, 73.36251226838998),
     (28.718101270763515, 68.53721319020808, 25.552799970763516, 77.99638789020796),
@@ -34,7 +33,7 @@ for lat1, lon1, lat2, lon2 in regions :
     width = lon2 - lon1
     height = lat2 - lat1
 
-    rect = Rectangle((lon1, lat2), width, height, linewidth=2, facecolor='blue', transform=ccrs.PlateCarree())
+    rect = Rectangle((lon1, lat2), width, height, linewidth=2, facecolor='red', transform=ccrs.PlateCarree())
     ax.add_patch(rect)
 
 plt.title("Map")
