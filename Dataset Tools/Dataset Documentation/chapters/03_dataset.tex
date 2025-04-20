@@ -7,6 +7,9 @@ The images are in png format with the dimension of $256\times256$ pixels. The sc
     \item \textbf{Sentinel-2:} The images consist of 3 bands for Red, Green and Blue. The bands are also scaled for proper visualisation.
 \end{itemize}
 
+\subsection{Heat Zone CSVs}
+Each region folder in each season folder in the dataset comes with an accompanying csv file called \texttt{info\_XX}. The columns in the CSV are 's1\_fileName', 's2\_fileName', 'season' and 'region'. These CSV files contain the temperature region or the heat zone information for every image in the dataset.
+
 \subsection{Copernicus API Method}
 Copernicus Data Space Ecosystem with a tagline of Europe's eyes on Earth is an open ecosystem that provides free instant access to a wide range of data and services from the Copernicus Sentinel missions\cite{copernicusHome}. It provides data from all Sentinel satellites in various forms. For Sentinel-1 images, we used the 'Level 3 Monthly Mosaics' collection, and for Sentinel-2 we used the 'Level 3 Quaterly Mosaics' collection.
 The following sections contain an overview of how the copernicus API was used to obtain the images.
@@ -29,10 +32,10 @@ Thus, we need to create square patches with 50 KM distances as the side of the s
 
 Thus, we end up with a list of coordinates for all subregions formed from the original selection.
 
-\subsubsection{Authentication}
+\subsubsection{Authentication} \label{CopeAuth}
 In order to use the API of copernicus sentinel hub, we need to authenticate ourselves and obtain an access token. Therefore, client id and client secret are used to fetch a token and authenticate ourself.
 
-\subsubsection{Defining Image properties}
+\subsubsection{Defining Image properties} \label{CopImgProp}
 AFter authentication, the image properties are set in preparation of the image download. This is where the difference in obtaining Sentinel-1 and Sentinel-2 images appear due to differences in image formats.
 
 We set the image height and width to 2500 pixels each. Following that, the eval script is set. An eval script is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub\cite{evalDoc}. Two different eval scripts are used for Sentinel-1 and Sentinel-2 images due to different number of bands being used in the images.
@@ -100,6 +103,12 @@ After the first manual inspection, the images were cropped and divided into mult
     \label{fig:cropStep}
 \end{figure*}
 
+\begin{figure*}[t]
+    \includegraphics[width=\textwidth]{worldMap.png}
+    \caption{Additional scenes (marked in red) for new set of patch pairs.}
+    \label{fig:newMap}
+\end{figure*}
+
 \subsubsection{Second manual inspection}
 Once the images are cropped and divided into smaller images, one last manual inspection is performed. The purpose of this inspection is the same as the first manual inspection, to verify variations in images. This check is performed to ensure no plain images exist in the dataset.
 
@@ -124,13 +133,96 @@ And, exporting the CSV file to Google drive using the \textbf{\texttt{Export.tab
 
 
 \subsection{Augmenting Dataset with Heat Zone}
-TODO for Shreyashi.
+In this enhancement of the dataset, we implement a new method that facilitates temperature zone labeling by identifying the best-matching Sentinel-2 images from the Copernicus API for each dataset image.
 
-\begin{figure*}
-    \includegraphics[width=\textwidth]{worldMap.png}
-    \caption{Additional scenes for new set of patch pairs.}
-    \label{fig:newMap}
+This method involves fetching high-resolution Sentinel-2 imagery for selected coordinates across different seasons, dividing them into smaller image patches, and comparing them with patches from the TUM Sentinel 1-2 dataset through feature-based image matching. This approach allows precise geographic tagging and classification of dataset images according to their hemisphere and temperature zone.
+
+\subsubsection{Filtering ROI Coordinates}
+
+We begin by extracting the relevant coordinate points from the \texttt{seasonal\_regions\_coordinates.csv} file, which is filtered based on the specific season under study (e.g., spring, summer, fall, or winter). Each row in the file includes a pair of latitude and longitude values representing a distinct geographical location.
+
+This CSV was generated using the seasonal region map referenced in [1], where global areas are visually segmented by season through color-coded highlights. To automate the extraction process:
+
+\begin{itemize}
+    \item The map image was converted to the HSV color space using OpenCV.
+    \item Color thresholds were defined to identify regions corresponding to each season:
+    \begin{itemize}
+        \item \textbf{Blue for winter} 
+        \item \textbf{Red for fall}
+        \item \textbf{Green for summer}
+        \item \textbf{Orange for spring}
+    \end{itemize}
+    \item Contours were detected for each seasonal color, and the centroid of every contour was computed.
+    \item Assuming an equirectangular map projection, the pixel-based centroids were converted into approximate latitude and longitude coordinates.
+    \item These points were stored season-wise in the resulting CSV file.
+\end{itemize}
+
+\subsubsection{Retrieving Sentinel-2 Data via Copernicus API}
+
+To obtain Sentinel-2 imagery, we make use of the Copernicus Data Space Ecosystem API. Authentication is handled securely using OAuth 2.0, where credentials in the form of a \texttt{client-id} and \texttt{client-secret} are used to establish an authorized session.
+
+The procedure for defining image parameters, specifying the time range, and applying the \texttt{evalscript} to extract RGB bands (B02, B03, and B04) follows the methodology described earlier in Sections \ref{CopeAuth} and \ref{CopImgProp}.
+
+For each coordinate, a high-resolution image of size 2500 × 2500 pixels is requested, centered around the specified location. This image forms the basis for subsequent segmentation and matching tasks.
+
+\subsubsection{Segmenting the Images into 256×256 Image Patches}
+
+Each $2500\times2500$ image is divided into 81 smaller patches, each sized 256 × 256 pixels. These patches are stored in season-specific folders and maintain compatibility with the original SEN1-2 dataset format.
+
+\subsubsection{Feature Matching Using ORB}
+
+For every \texttt{s2\_XX} folder in the dataset:
+
+\begin{itemize}
+    \item A random image is chosen as the target.
+    \item ORB (Oriented FAST and Rotated BRIEF) feature descriptors are used to compare this image with each downloaded Sentinel-2 patch.
+    \item A matching score is calculated based on the number of matched keypoints.
+    \item The patch with the highest score is considered the best match.
+\end{itemize}
+
+\subsubsection{Classifying by Temperature Zone}
+
+After identifying the best match, the latitude of the associated coordinate is used to determine its temperature zone:
+
+\begin{itemize}
+    \item \textbf{Tropical Zone:} Between -23.5° and +23.5°
+    \item \textbf{Temperate Zone:} Between ±23.5° and ±66.5°
+    \item \textbf{Arctic Zone:} Above ±66.5°
+\end{itemize}
+
+This classification is appended as metadata to each matched image.
+
+\subsubsection{Output and Metadata Storage}
+
+All results—including folder name, ORB match score, and temperature zone—are recorded in a season-specific CSV file. Each row provides:
+
+\begin{itemize}
+    \item The dataset folder name (\texttt{s2\_folder})
+    \item The computed match score (\texttt{match\_score})
+    \item The determined temperature zone (\texttt{temperature\_zone})
+\end{itemize}
+
+This structured CSV serves as an annotated index for geolocation and climatic zone metadata, enhancing the contextual utility of the dataset.
+
+\subsubsection{Removed data}
+A small portion of data was removed during this step as they couldn't be tagged properly with a matching region. The following regions from each season were removed: 
+
+\begin{itemize}
+    \item \textit{fall}: 4, 8, 13, 66, 82
+    \item \textit{spring}: 45, 68, 95
+    \item \textit{summer}: 53
+    \item \textit{winter}: 12
+\end{itemize}
+
+In total, 11,747 pairs of images were removed.
+
+\begin{figure*}[t]
+    \includegraphics[width=\textwidth]{showCase.png}
+    \caption{Sample images from the new added data. Top row: Sentinel-1 images, bottom row: corresponding Sentinel-2 images}
+    \label{fig:showCase}
 \end{figure*}
 
 \subsection{Dataset availability}
 The \textit{Augmented Sentinel 1-2} dataset is shared under the open access license CC-BY-SA 4.0 and is available to download at a persistent link provided by kaggle and DataCite. The dataset can be accessed at \url{https://doi.org/10.34740/kaggle/dsv/11487561}. This paper must be cited when the dataset is used for research purposes.
+
+All tools used to create the dataset are available at \href{https://github.com/ShambaC/SAR-Image-Colorisation/tree/main/Dataset%20Tools}{GitHub}.
