@@ -1,10 +1,10 @@
-The dataset format remains unchanged. The pairs of images are divided between 4 seasons and are grouped by regions into specific folders. However, the data acquiring process has been changed slightly. On top of using Google Earth Engine\cite{GORELICK201718} we also use the Copernicus Data Space Ecosystem API to access Sentinel data.
+The dataset format remains unchanged. The pairs of images are divided between 4 seasons and are grouped by regions into specific folders. However, the data acquisition process has been slightly changed. In addition to using Google Earth Engine\cite{GORELICK201718} we also use the Copernicus Data Space Ecosystem API to access Sentinel data.
 
 \subsection{Image format}
-The images are in png format with the dimension of $256\times256$ pixels. The scale or zoom level of the image in terms of distance is 20m. Now, the sentinel satellite specific image details will be defined in the following points:
+The images are in png format with a dimension of $256\times256$ pixels. The scale or zoom level of the image in terms of distance is 20m. Now, the sentinel satellite-specific image details will be defined in the following points:
 \begin{itemize}
     \item \textbf{Sentinel-1:} The images are taken from the IW acquisition mode of the satellite and are in VV polarization. It comprises of only a single band.
-    \item \textbf{Sentinel-2:} The images consist of 3 bands for Red, Green and Blue. The bands are also scaled for proper visualisation.
+    \item \textbf{Sentinel-2:} The images consist of 3 bands for Red, Green, and Blue. The bands are also scaled for proper visualization.
 \end{itemize}
 
 \subsection{Heat Zone CSVs}
@@ -23,7 +23,7 @@ The Copernicus service provides a limited number of API calls per month for free
     &= 50,000m
 \end{align*}
 
-Thus, we need to create square patches with 50 KM distances as the side of the said patch. For this task, we first select a region in Google Earth Engine using the rectangular selection tool. We can then obtain the coordinates for the four corners of the selection. We use these coordinates to divide the region into multiple square regions with 50 KM side. To perform the division we calculate subsequent latitude and longitude coordinates beginning from the top left corner of the selection. The formula for approximately converting Longitude and Latitude into kilometers are:
+Thus, we need to create square patches with 50 KM distances as the side of the said patch. For this task, we first select a region in Google Earth Engine using the rectangular selection tool. We can then obtain the coordinates for the four corners of the selection. We use these coordinates to divide the region into multiple square regions with 50 KM side. To perform the division, we calculate the subsequent latitude and longitude coordinates beginning from the top left corner of the selection. The formulas for approximately converting longitude and latitude into kilometers are as follows:
 
 \begin{itemize}
     \item \textbf{Latitude: } $1^\circ = 110.574$KM
@@ -38,7 +38,7 @@ In order to use the API of copernicus sentinel hub, we need to authenticate ours
 \subsubsection{Defining Image properties} \label{CopImgProp}
 AFter authentication, the image properties are set in preparation of the image download. This is where the difference in obtaining Sentinel-1 and Sentinel-2 images appear due to differences in image formats.
 
-We set the image height and width to 2500 pixels each. Following that, the eval script is set. An eval script is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub\cite{evalDoc}. Two different eval scripts are used for Sentinel-1 and Sentinel-2 images due to different number of bands being used in the images.
+We set the image height and width to 2500 pixels each. Following that, the eval script is set. An eval script is a piece of Javascript code which defines how the satellite data shall be processed by Sentinel Hub\cite{evalDoc}. Two different eval scripts are used for Sentinel-1 and Sentinel-2 images due to the different number of bands being used in the images.
 
 The Sentinel-1 eval script is as follows:
 
@@ -77,7 +77,7 @@ From the eval scripts we can infer that Sentinel-1 images have one band, called 
 Then, bounding box coordinates and time frame for images are sent with the request along with the previously mentioned data.
 
 \subsubsection{Adding Region Data}
-Now, the new addition in our dataset is the temperature region information. Temperature regions are also known as heat zones of the Earth. There are three heat zones, Arctic or Frigid zone, Temperate zone, and Tropical or Torrid Zone. These zones are classified according to latitude.
+Now, the new addition to our dataset is the temperature region information. Temperature regions are also known as heat zones of the Earth. There are three heat zones, Arctic or Frigid zone, Temperate zone, and Tropical or Torrid Zone. These zones are classified according to latitude.
 
 \begin{itemize}
     \item Tropical Zone: It lies between the Tropic of Cancer ($23.5^\circ$ North) and Tropic of Capricorn ($23.5^\circ$ South). This zone receives the most heat from the sun.
@@ -85,7 +85,7 @@ Now, the new addition in our dataset is the temperature region information. Temp
     \item Arctic Zone: In the northern hemisphere, it is located between the North Pole ($90^\circ$ North) and Arctic circle. In the southern hemisphere, it lies between the South Pole ($90^\circ$ South) and the Antarctic circle. This region is the coldest region of them all.
 \end{itemize}
 
-We have decided to include lesser amounts of arctic zone data as those images majorly consist of snow wihtout much variation.
+We have decided to include lesser amounts of arctic zone data, as those images are mainly composed of snow without much variation.
 
 Therefore, the region is calculated based on the latitude and is written to a csv file. The csv files are made on a per region folder basis.
 
